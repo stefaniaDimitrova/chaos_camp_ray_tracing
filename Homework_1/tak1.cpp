@@ -57,9 +57,7 @@ int main()
                         green = 0;
                         blue = rand() % 256;
 
-                        ppmFileStream << red << ' ' << green << ' ' << blue << ' ' << '\t';
-
-                        
+                        ppmFileStream << red << ' ' << green << ' ' << blue << ' ' << '\t'; 
                     }
             else 
             {
