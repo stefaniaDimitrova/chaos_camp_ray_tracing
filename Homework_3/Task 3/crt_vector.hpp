@@ -36,6 +36,12 @@ public:
         );
     }
 
+    CRTVector normalize() const {
+        float len = length();
+        if (len == 0) return CRTVector(0, 0, 0); // Avoid division by zero
+        return CRTVector(x / len, y / len, z / len);
+    }
+
 
    private:
    float x, y, z;
