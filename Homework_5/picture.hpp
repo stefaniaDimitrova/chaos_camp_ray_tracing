@@ -9,4 +9,9 @@ struct Picture{
     std::vector<std::vector<CRTPixel>> pixels;
 
     Picture(int width, int height) : imageWidth(width), imageHeight(height) {}
+
+    void clear() {
+        pixels.clear();
+        pixels.resize(imageWidth, std::vector<CRTPixel>(imageHeight));
+    }
 };

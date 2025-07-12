@@ -17,6 +17,15 @@ public:
     float getZ() const {
         return z;
     }
+    void setX(float x) {
+        this->x = x;
+    }
+    void setY(float y) {
+        this->y = y;
+    }
+    void setZ(float z) {
+        this->z = z;
+    }
 
     float length() const {
         return std::sqrt(x * x + y * y + z * z);

@@ -23,8 +23,10 @@ CRTRay generatedRay (int x, int y, CRTCamera &camera)
 
     //normalizing the ray direction
     CRTVector rayDirection(screenX, screenY, screenZ);
-    float length = rayDirection.length();
-    CRTVector normalizedDirection(screenX / length,screenY / length,screenZ / length);
+    CRTVector rRayDirection = rayDirection*camera.getRotationMatrix(); // Apply camera rotation
+
+    float length = rRayDirection.length();
+    CRTVector normalizedDirection(rRayDirection.getX() / length,rRayDirection.getY() / length,rRayDirection.getZ() / length);
 
     //creating the ray
     CRTRay cameraRay;
@@ -100,30 +102,109 @@ void generatePicture(Picture &picture, std::ofstream &fileStream)
     }
 }
 
+std::ofstream generateStream(std::string fileName)
+{
+    std::ofstream ppmFileStream(fileName, std::ios::out | std::ios::binary);
+    ppmFileStream << "P3\n" << imageWidth << " " << imageHeight << "\n" << maxColorComponent << "\n";
+
+    return ppmFileStream;
+}
+
 int main()
 {
-    std::ofstream ppmFileStream("triangle_output_image.ppm", std::ios::out | std::ios::binary);
-    ppmFileStream << "P3\n" << imageWidth << " " << imageHeight << "\n" << maxColorComponent << "\n";
-    // std::cout << "HERE" << std::endl;
-
     Picture result(imageWidth, imageHeight);
 
-    CRTCamera camera(CRTVector(0,0,0));
+    //TASK1
+    CRTCamera camera(CRTVector(0,0,-1));
 
     CRTVector D( 0.0f,  1.0f, -3.0f);   // apex
     CRTVector A( 0.0f, -1.0f, -3.0f);   // front-base vertex (directly underneath the apex)
-    CRTVector B(-1.0f, -1.0f, -5.0f);   // back-left
-    CRTVector C( 1.0f, -1.0f, -5.0f);   // back-right
+    CRTVector B(-2.0f, -1.0f, -5.0f);   // back-left
+    CRTVector C( 2.0f, -1.0f, -5.0f);   // back-right
 
     // Two faces sharing the edge D→A:
     CRTTriangle leftFace  { D, A, B };
     CRTTriangle rightFace { D, C, A };
+
+    //rotating camera 30 degrees around the Y-axis
+    camera.pan(30.0f * 3.14 / 180.0f);
     
-    generateTriangle(leftFace,result, 255,0,255, camera);
-    generateTriangle(rightFace, result, 255,0,0, camera);
-    generatePicture(result, ppmFileStream);
+    generateTriangle(leftFace,result, 255,0,255,camera);
+    generateTriangle(rightFace, result, 255,0,0,camera);
 
-    ppmFileStream.close();
-  
+    std::ofstream task1 = generateStream("task1_output_image.ppm");
+    generatePicture(result, task1);
 
+    task1.close();
+
+
+    //TASK2
+    // result.clear();
+    // camera.reset();
+
+    // CRTTriangle triangle1(CRTVector(-1.75, -1.75, -3), 
+    //                     CRTVector(1.75,-1.75,-3), 
+    //                     CRTVector(0,1.75,-3));
+
+    // camera.dolly(-1.0f); // Move the camera back to see the triangle
+
+    // generateTriangle(triangle1, result, 255,0,255,camera);
+
+    // std::ofstream task2 = generateStream("task2_output_image.ppm");
+    // generatePicture(result, task2);
+
+    // task2.close(); 
+
+    //TASK3
+    result.clear();
+    camera.reset();
+
+    generateTriangle(leftFace,result, 255,0,255,camera);
+    generateTriangle(rightFace, result, 255,0,0,camera);
+
+    std::ofstream task3_before = generateStream("task3_before_output_image.ppm");
+    generatePicture(result, task3_before);
+
+    task3_before.close();
+
+    result.clear();
+    camera.reset();
+
+    camera.pedestal(0.5f); // Move the camera up
+    camera.dolly(1); // Move the camera back to see the triangle
+
+    generateTriangle(leftFace,result, 255,0,255,camera);
+    generateTriangle(rightFace, result, 255,0,0,camera);
+
+    std::ofstream task3_after = generateStream("task3_after_output_image.ppm");
+    generatePicture(result, task3_after);
+
+    task3_after.close();
+
+    //TASK4
+    result.clear();
+    camera.reset();
+
+    generateTriangle(leftFace,result, 255,0,255,camera);
+    generateTriangle(rightFace, result, 255,0,0,camera);
+    
+    std::ofstream task4_before = generateStream("task4_before_output_image.ppm");
+    generatePicture(result, task4_before);
+    task4_before.close();
+
+    result.clear();
+    camera.reset();
+
+    camera.tilt(30.0f * 3.14 / 180.0f); // Tilt the camera up
+    camera.pan(30.0f * 3.14 / 180.0f); // Pan the camera to the right
+    camera.truck(1.0f); // Truck the camera to the right
+
+    generateTriangle(leftFace,result, 255,0,255,camera);
+    generateTriangle(rightFace, result, 255,0,0,camera);
+
+    std::ofstream task4_after = generateStream("task4_after_output_image.ppm");
+    generatePicture(result, task4_after);
+    task4_after.close();
+
+    return 0;
 }
