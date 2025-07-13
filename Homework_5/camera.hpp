@@ -5,6 +5,7 @@
 class CRTCamera{
 public:
 CRTCamera (CRTVector position) : position(position) {}
+CRTCamera() : position(0.0f, 0.0f, 0.0f), rotationMatrix() {}
 
 CRTVector getPosition() const {
         return position;
