@@ -29,7 +29,7 @@ public:
 
     void renderScene()
     {
-        camera.dolly(3);
+        camera.dolly(-2);
         
         int trianglesCounter = 1;
         int red = rand() % 256;

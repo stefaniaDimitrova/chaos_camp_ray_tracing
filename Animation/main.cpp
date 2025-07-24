@@ -2,7 +2,7 @@
 
 int main()
 {
-    CRTScene scene("scene0.crtscene");
+    CRTScene scene("scene6.crtscene");
 
     scene.renderScene();
 
